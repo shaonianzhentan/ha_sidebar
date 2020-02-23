@@ -1,0 +1,8 @@
+{
+    "domain": "ha_sidebar",
+    "name": "ha_sidebar",
+    "documentation": "https://github.com/shaonianzhentan/ha_sidebar",
+    "requirements": [],
+    "dependencies": [],
+    "codeowners": []
+  }
