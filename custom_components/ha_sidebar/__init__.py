@@ -8,7 +8,7 @@ from .api_config import ApiConfig
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 URL = '/ha_sidebar-api'
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
