@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.bootcss.com/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <link href="https://cdn.bootcss.com/element-ui/2.13.0/theme-chalk/index.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #app,
+        iframe {
+            height: 100vh;
+        }
+
+        .el-menu-vertical-demo:not(.el-menu--collapse) {
+            width: 200px;
+        }
+
+        #app {
+            display: flex;
+        }
+
+        iframe {
+            width: 100%;
+            border: none;
+        }
+
+        .el-menu-demo {
+            display: none;
+        }
+
+        .el-scrollbar {
+            background-color: white;
+            height: 100%;
+            overflow-x: hidden;
+            border-right: 1px solid #eee;
+        }
+        .el-scrollbar__wrap{
+            overflow-x: hidden;
+        }
+        @media screen and (max-width: 900px) {
+            #app {
+                display: block;
+            }
+
+            iframe {
+                height: calc(100vh - 60px);
+                position: absolute;
+                margin-top: -1px;
+            }
+
+            .el-scrollbar {
+                display: none;
+            }
+
+            .el-menu-demo {
+                display: block;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 移动端 -->
+        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
+            active-text-color="#ffd04b">
+            <el-menu-item index="1">
+                <i class="el-icon-menu"></i> HA
+            </el-menu-item>
+            <el-submenu index="2">
+                <template slot="title">
+                    <i class="el-icon-s-operation"></i>
+                    菜单列表</template>
+                <el-menu-item v-for="(item,index) in list" @click="linkClick(item)" :index="`2-${index}`">
+                    <i :class="['el-icon-','mdi', item.icon.replace(':','-')]"></i>
+                    <span slot="title">{{item.name}}</span>
+                </el-menu-item>
+            </el-submenu>
+        </el-menu>
+
+
+        <!-- PC端 -->
+        <el-scrollbar>
+            <el-menu default-active='-1' class="el-menu-vertical-demo" :collapse="isCollapse">
+                <el-menu-item @click="isCollapse = !isCollapse" index="-1">
+                    <i :class="`el-icon-s-${isCollapse ? 'unfold' : 'fold'}`"></i>
+                    <span slot="title">展开/折叠</span>
+                </el-menu-item>
+                <el-menu-item v-for="(item,index) in list" @click="linkClick(item)" :index="index">
+                    <i :class="['el-icon-','mdi', item.icon.replace(':','-')]"></i>
+                    <span slot="title">
+                        {{item.name}}
+                    </span>
+                </el-menu-item>
+            </el-menu>
+        </el-scrollbar>
+        <iframe name="main"></iframe>
+    </div>
+    <script src="ha.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/2.13.0/index.js"></script>
+    <script>
+        ha.fullscreen()
+
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    isCollapse: true,
+                    list: [
+                        {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }, {
+                            name: '测试',
+                            link: '',
+                            icon: 'mdi:link'
+                        }
+                    ]
+                }
+            },
+            created() {
+                this.load()
+            },
+            methods: {
+                load() {
+                    ha.http('/ha_sidebar-api', { type: 'get_tabs' }).then(res => {
+                        this.list = res.data
+                    })
+                },
+                linkClick({ link }) {
+                    document.querySelector('iframe').src = link
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
