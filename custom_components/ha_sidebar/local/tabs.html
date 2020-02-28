@@ -42,9 +42,11 @@
             overflow-x: hidden;
             border-right: 1px solid #eee;
         }
-        .el-scrollbar__wrap{
+
+        .el-scrollbar__wrap {
             overflow-x: hidden;
         }
+
         @media screen and (max-width: 900px) {
             #app {
                 display: block;
@@ -72,7 +74,7 @@
         <!-- 移动端 -->
         <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
             active-text-color="#ffd04b">
-            <el-menu-item index="1">
+            <el-menu-item index="1" @click="toggleMenuClick">
                 <i class="el-icon-menu"></i> HA
             </el-menu-item>
             <el-submenu index="2">
@@ -115,101 +117,7 @@
             data() {
                 return {
                     isCollapse: true,
-                    list: [
-                        {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }, {
-                            name: '测试',
-                            link: '',
-                            icon: 'mdi:link'
-                        }
-                    ]
+                    list: []
                 }
             },
             created() {
@@ -219,7 +127,13 @@
                 load() {
                     ha.http('/ha_sidebar-api', { type: 'get_tabs' }).then(res => {
                         this.list = res.data
+                        if (this.list.length > 0) {
+                            this.linkClick({ link: this.list[0].link })
+                        }
                     })
+                },
+                toggleMenuClick() {
+                    ha.fire('hass-toggle-menu')
                 },
                 linkClick({ link }) {
                     document.querySelector('iframe').src = link

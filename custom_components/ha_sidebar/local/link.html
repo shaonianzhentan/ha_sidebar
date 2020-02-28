@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    <script src="ha.js"></script>
     <script>
         // 获取数据
         (() => {
@@ -14,43 +15,35 @@
             let mode = parseInt(query.get('mode'))
             // 打开内置页面
             if (mode == 4) {
-                top.document.querySelector('home-assistant')._route = {
-                    prefix: '',
-                    path: link,
-                    __queryParams: {}
-                }
+                top.history.replaceState(null, null, link)
+                // top.document.querySelector('home-assistant')._route = {
+                //     prefix: '',
+                //     path: link,
+                //     __queryParams: {}
+                // }
+                // top.document.querySelector('home-assistant')._panelUrl = link
+                ha.fire('location-changed', { replace: true }, top)
                 return
             }
-            // 设置全屏模式
-            try {
-                let haPanelIframe = top.document.body
-                    .querySelector("home-assistant")
-                    .shadowRoot.querySelector("home-assistant-main")
-                    .shadowRoot.querySelector("app-drawer-layout partial-panel-resolver ha-panel-iframe").shadowRoot
-                let ha_card = haPanelIframe.querySelector("iframe");
-                ha_card.style.position = 'absolute'
-
-                if (mode == 2) {
-                    haPanelIframe.querySelector('app-toolbar').style.display = 'none'
-                    ha_card.style.top = '0'
-                    ha_card.style.height = '100%'
-                }
-                // 生成链接
-                let a = document.createElement('a')
-                a.target = '_blank'
-                a.href = link
-                a.textContent = link
-                document.body.appendChild(a)
-
-                if (mode == 3) {
-                    window.open(link)
-                } else {
-                    location.href = link;
-                }
-
-            } catch (ex) {
-
+            // 全屏模式
+            if (mode == 2) {
+                ha.fullscreen()
+            } else {
+                ha.fullscreen(1)
             }
+            // 生成链接
+            let a = document.createElement('a')
+            a.target = '_blank'
+            a.href = link
+            a.textContent = link
+            document.body.appendChild(a)
+
+            if (mode == 3) {
+                window.open(link)
+            } else {
+                location.href = link;
+            }
+
         })()
 
 

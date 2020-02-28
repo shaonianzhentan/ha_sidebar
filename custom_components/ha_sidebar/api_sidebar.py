@@ -1,8 +1,10 @@
 
 class ApiSidebar():
 
-    def __init__(self, hass):
+    def __init__(self, hass, cfg):
         self.hass = hass
+        self.tabs_name = cfg.get('tabs_name', '二级菜单')
+        self.tabs_icon = cfg.get('tabs_icon', 'mdi:format-list-numbered')
 
     @property
     def panel(self):
@@ -13,7 +15,7 @@ class ApiSidebar():
             self.hass.components.frontend.async_remove_panel(_path)
 
     def add_tabs(self, ROOT_PATH):
-        self.add("Tabs", "mdi:xbox-controller-menu", "ha_sidebar-tabs", ROOT_PATH + '/tabs.html')
+        self.add(self.tabs_name, self.tabs_icon, "ha_sidebar-tabs", ROOT_PATH + '/tabs.html')
 
     def add(self, name, icon, _path, url):
         self.hass.components.frontend.async_register_built_in_panel(
