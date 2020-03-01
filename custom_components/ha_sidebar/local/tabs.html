@@ -72,8 +72,7 @@
 <body>
     <div id="app">
         <!-- 移动端 -->
-        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
-            active-text-color="#ffd04b">
+        <el-menu class="el-menu-demo" mode="horizontal" >
             <el-menu-item index="1" @click="toggleMenuClick">
                 <i class="el-icon-menu"></i> HA
             </el-menu-item>
@@ -104,7 +103,7 @@
                 </el-menu-item>
             </el-menu>
         </el-scrollbar>
-        <iframe name="main"></iframe>
+        <iframe name="main" src="all.html"></iframe>
     </div>
     <script src="ha.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
@@ -127,15 +126,19 @@
                 load() {
                     ha.http('/ha_sidebar-api', { type: 'get_tabs' }).then(res => {
                         this.list = res.data
-                        if (this.list.length > 0) {
-                            this.linkClick({ link: this.list[0].link })
-                        }
                     })
                 },
                 toggleMenuClick() {
                     ha.fire('hass-toggle-menu')
                 },
                 linkClick({ link }) {
+                    // 内置配置页面
+                    if (link.indexOf('/config/') === 0 ||
+                        link.indexOf('/developer-tools/') === 0) {
+                        top.history.replaceState(null, null, link)
+                        ha.fire('location-changed', { replace: true }, top)
+                        return
+                    }
                     document.querySelector('iframe').src = link
                 }
             }

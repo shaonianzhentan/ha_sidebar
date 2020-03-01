@@ -22,8 +22,12 @@ class HA {
         }
     }
 
-    post(params) {
-        return this.http(top.location.pathname + '-api', params)
+    post(params, url = '') {
+        let api = top.location.pathname + '-api'
+        if (url != '') {
+            api = url
+        }
+        return this.http(api, params)
     }
 
     // 触发事件

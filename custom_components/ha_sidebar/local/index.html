@@ -72,6 +72,8 @@
                         <li @click="editClick(item)"><a href="#!">编辑</a></li>
                         <li class="divider"></li>
                         <li @click="deleteClick(item)"><a href="#!">删除</a></li>
+                        <li class="divider"></li>
+                        <li><a :href="item.link" target="_blank">打开</a></li>
                     </ul>
                 </li>
 
@@ -83,6 +85,7 @@
             <div class="modal-content">
                 <h4>侧边栏信息</h4>
                 <form style="margin-top:40px;">
+
                     <div class="row">
                         <div class="input-field col s12">
                             <input placeholder="侧边栏名称" maxlength="10" id="content_name" v-model.trim="content.name"
@@ -109,6 +112,12 @@
                             <input placeholder="https://demo.home-assistant.io/" id="content_link"
                                 v-model.trim="content.link" type="text" class="validate">
                             <label for="content_link">链接</label>
+                        </div>
+                        <div class="col s12">
+                            可直接使用mdi官方图标：
+                            <a class="teal-text" href="https://unpkg.com/@mdi/font@4.9.95/preview.html"
+                            target="_blank">https://unpkg.com/@mdi/font@4.9.95/preview.html</a>
+                    
                         </div>
                     </div>
                 </form>
@@ -253,6 +262,10 @@
                     if (!link) {
                         this.toast('请输入链接')
                         return
+                    }
+                    // 格式修正
+                    if (icon.indexOf('mdi-') === 0) {
+                        icon = icon.replace('mdi-', 'mdi:')
                     }
                     this.loading = true
                     ha.post({
