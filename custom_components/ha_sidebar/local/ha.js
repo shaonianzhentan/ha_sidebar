@@ -1,6 +1,15 @@
 class HA {
     constructor() {
+        let query = new URLSearchParams(location.search)
+        this.query = key => {
+            let val = query.get(key)
+            if (val) {
+                return decodeURIComponent(val)
+            }
+            return val
+        }
 
+        this.ver = this.query('ver')
     }
 
     fullscreen(mode = 0) {
@@ -23,7 +32,7 @@ class HA {
     }
 
     post(params, url = '') {
-        let api = top.location.pathname + '-api'
+        let api = top.location.pathname + '-api-' + this.ver
         if (url != '') {
             api = url
         }

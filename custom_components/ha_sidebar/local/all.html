@@ -50,7 +50,7 @@
                 getList() {
                     ha.post({
                         type: 'get'
-                    }, '/ha_sidebar-api').then(res => {
+                    }, '/ha_sidebar-api-' + ha.ver).then(res => {
                         this.list = res.data
                     })
                 }

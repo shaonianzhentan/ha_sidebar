@@ -1,7 +1,7 @@
-import os, yaml, uuid, logging, time
+import os, yaml, uuid, logging, time, importlib
 from aiohttp import web
 from homeassistant.components.http import HomeAssistantView
-import homeassistant.config as conf_util
+from homeassistant import config as conf_util, loader
 
 from .api_config import ApiConfig
 from .api_sidebar import ApiSidebar
@@ -9,8 +9,8 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.2'
-URL = '/ha_sidebar-api'
+VERSION = '1.3.5'
+URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
 
@@ -34,13 +34,23 @@ def setup(hass, config):
     if _list is not None:
         for item in _list:
             if item['mode'] == '5':
-                api.api_sidebar.add_tabs(ROOT_PATH)
+                api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
             else:
                 api.api_sidebar.add(
                     item['name'],
                     item['icon'],
                     item['path'],
                     ROOT_PATH + '/link.html?mode=' + str(item['mode']) +'&link=' + item['link'])
+    
+    if hass.services.has_service(DOMAIN, 'reload') == False:
+        async def reload(call):
+            integration = await loader.async_get_integration(hass, DOMAIN)
+            component = integration.get_component()
+            importlib.reload(component)
+            config = await conf_util.async_hass_config_yaml(hass)
+            component.setup(hass, config)
+
+        hass.services.register(DOMAIN, 'reload', reload)
 
     # 显示插件信息
     _LOGGER.info('''
@@ -78,7 +88,7 @@ class HassGateView(HomeAssistantView):
                 _path = '_' + str(time.time())
                 mode = str(query['mode'])                
                 if mode == '5':
-                    api.api_sidebar.add_tabs(ROOT_PATH)
+                    api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
                 else:    
                     # 添加所有菜单
                     api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH + '/link.html?mode=' + mode +'&link=' + query['link'])
@@ -107,7 +117,7 @@ class HassGateView(HomeAssistantView):
                 mode = str(query['mode'])
                 if mode == '5':
                     api.api_sidebar.remove(_path)
-                    api.api_sidebar.add_tabs(ROOT_PATH)
+                    api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
 
                 for i in range(len(_list)):
                     if _list[i]['path'] == _path:
@@ -119,6 +129,13 @@ class HassGateView(HomeAssistantView):
                             api.api_sidebar.add(query['name'],query['icon'],_path,ROOT_PATH + '/link.html?mode=' + mode +'&link=' + query['link'])
 
                 api.write(StorageFile, _list)
+                return self.json({'code':0, 'msg': '保存成功'})
+            elif _type == 'reload':
+                integration = await loader.async_get_integration(hass, DOMAIN)
+                component = integration.get_component()
+                importlib.reload(component)
+                config = await conf_util.async_hass_config_yaml(hass)
+                component.setup(hass, config)
                 return self.json({'code':0, 'msg': '保存成功'})
         except Exception as e:
             _LOGGER.error(e)

@@ -103,7 +103,7 @@
                 </el-menu-item>
             </el-menu>
         </el-scrollbar>
-        <iframe name="main" src="all.html"></iframe>
+        <iframe name="main" :src="`all.html?ver=${ha.ver}`"></iframe>
     </div>
     <script src="ha.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
@@ -124,7 +124,7 @@
             },
             methods: {
                 load() {
-                    ha.http('/ha_sidebar-api', { type: 'get_tabs' }).then(res => {
+                    ha.http('/ha_sidebar-api-' + ha.ver, { type: 'get_tabs' }).then(res => {
                         this.list = res.data
                     })
                 },
