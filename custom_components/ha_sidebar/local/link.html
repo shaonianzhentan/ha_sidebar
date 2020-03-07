@@ -9,10 +9,9 @@
     <script src="ha.js"></script>
     <script>
         // 获取数据
-        (() => {
-            let query = new URLSearchParams(location.search)
-            let link = query.get('link')
-            let mode = parseInt(query.get('mode'))
+        (() => {            
+            let link = ha.query('link')
+            let mode = parseInt(ha.query('mode'))
             // 打开内置页面
             if (mode == 4) {
                 top.history.replaceState(null, null, link)

@@ -2,6 +2,7 @@ import os, yaml, uuid, logging, time, importlib
 from aiohttp import web
 from homeassistant.components.http import HomeAssistantView
 from homeassistant import config as conf_util, loader
+from urllib.parse import quote,unquote
 
 from .api_config import ApiConfig
 from .api_sidebar import ApiSidebar
@@ -9,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.3'
+VERSION = '1.4'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -40,7 +41,7 @@ def setup(hass, config):
                     item['name'],
                     item['icon'],
                     item['path'],
-                    ROOT_PATH + '/link.html?mode=' + str(item['mode']) +'&link=' + item['link'])
+                    ROOT_PATH + '/link.html?mode=' + str(item['mode']) +'&link=' + quote(item['link'], 'utf-8'))
     
     if hass.services.has_service(DOMAIN, 'reload') == False:
         async def reload(call):
@@ -91,7 +92,7 @@ class HassGateView(HomeAssistantView):
                     api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
                 else:    
                     # 添加所有菜单
-                    api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH + '/link.html?mode=' + mode +'&link=' + query['link'])
+                    api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH + '/link.html?mode=' + mode +'&link=' + quote(query['link'],'utf-8'))
                 # 添加数据
                 _list.append({
                     'name': query['name'],
@@ -126,7 +127,7 @@ class HassGateView(HomeAssistantView):
                         _list[i]['link'] = query['link']
                         _list[i]['mode'] = mode
                         if mode != '5':
-                            api.api_sidebar.add(query['name'],query['icon'],_path,ROOT_PATH + '/link.html?mode=' + mode +'&link=' + query['link'])
+                            api.api_sidebar.add(query['name'],query['icon'],_path,ROOT_PATH + '/link.html?mode=' + mode +'&link=' + quote(query['link'], 'utf-8'))
 
                 api.write(StorageFile, _list)
                 return self.json({'code':0, 'msg': '保存成功'})
