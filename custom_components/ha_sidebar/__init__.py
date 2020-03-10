@@ -10,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.4'
+VERSION = '1.5'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -52,7 +52,8 @@ def setup(hass, config):
             component.setup(hass, config)
 
         hass.services.register(DOMAIN, 'reload', reload)
-
+    # 注入定时脚本
+    hass.components.frontend.add_extra_js_url(hass, ROOT_PATH + '/ha_sidebar.js')
     # 显示插件信息
     _LOGGER.info('''
 -------------------------------------------------------------------

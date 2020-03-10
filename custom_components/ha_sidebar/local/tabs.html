@@ -133,8 +133,12 @@
                 },
                 linkClick({ link }) {
                     // 内置配置页面
-                    if (link.indexOf('/config/') === 0 ||
-                        link.indexOf('/developer-tools/') === 0) {
+                    if (link.indexOf('/config') === 0 ||
+                        link.indexOf('/developer-tools') === 0 ||
+                        link.indexOf('/logbook') === 0 ||
+                        link.indexOf('/history') === 0 ||
+                        link.indexOf('/lovelace') === 0 ||
+                        link.indexOf('/map') === 0) {
                         top.history.replaceState(null, null, link)
                         ha.fire('location-changed', { replace: true }, top)
                         return
