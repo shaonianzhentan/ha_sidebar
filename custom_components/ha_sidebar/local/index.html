@@ -407,10 +407,13 @@
                     localStorage['ha_sidebar_hide_menu'] = JSON.stringify(obj)
                 },
                 updateClick(){
+                    this.loading = true
                     ha.post({
                         type: 'update'
                     }).then(res => {
                         this.toast(res.msg)
+                    }).finally(()=>{
+                        this.loading = false
                     })
                 }
             }
