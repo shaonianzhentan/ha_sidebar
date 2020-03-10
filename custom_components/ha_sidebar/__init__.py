@@ -10,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.5'
+VERSION = '1.5.1'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -139,6 +139,15 @@ class HassGateView(HomeAssistantView):
                 config = await conf_util.async_hass_config_yaml(hass)
                 component.setup(hass, config)
                 return self.json({'code':0, 'msg': '保存成功'})
+            elif _type == 'update':
+                _path =  hass.config.path("custom_components").replace('\\','/')
+                _sh =  _path+'/ha_sidebar/update.sh'
+                with open(_sh, 'r', encoding='utf-8') as f:
+                    content = f.read().replace('$source_path', _path)
+                with open(_sh, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                os.system(_sh)
+                return self.json({'code':0, 'msg': '升级成功'})
         except Exception as e:
             _LOGGER.error(e)
             return self.json({'code':1, 'msg': '出现异常'})
