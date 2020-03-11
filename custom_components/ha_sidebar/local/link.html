@@ -9,8 +9,9 @@
     <script src="ha.js"></script>
     <script>
         // 获取数据
-        (() => {            
+        (() => {
             let link = ha.query('link')
+            let wlan_link = ha.query('wlan_link')
             let mode = parseInt(ha.query('mode'))
             // 打开内置页面
             if (mode == 4) {
@@ -30,13 +31,27 @@
             } else {
                 ha.fullscreen(1)
             }
+            // 判断是否为同一网段
+            try {
+                if (wlan_link) {
+                    let wlan = new URL(wlan_link)
+                    let prefix = wlan.hostname.substr(0, wlan.hostname.lastIndexOf('.'))
+                    let prefix2 = location.hostname.substr(0, location.hostname.lastIndexOf('.'))
+                    if (prefix && prefix2 && prefix == prefix2) {
+                        console.log('当前是同一网段')
+                        link = wlan_link
+                    }
+                }
+            } catch{
+
+            }
             // 生成链接
             let a = document.createElement('a')
             a.target = '_blank'
             a.href = link
             a.textContent = link
             document.body.appendChild(a)
-
+            
             if (mode == 3) {
                 window.open(link)
             } else {

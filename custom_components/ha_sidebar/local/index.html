@@ -43,7 +43,6 @@
             </div>
             <div class="modal-footer">
                 <a href="#!" @click="reloadClick" class=" modal-action waves-effect waves-green btn-flat">重新加载</a>
-                <a href="#!" @click="updateClick" class="modal-action modal-close waves-effect waves-green btn-flat ">更新</a>
                 <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">关闭</a>
             </div>
         </div>
@@ -120,18 +119,18 @@
                 <form style="margin-top:40px;">
 
                     <div class="row">
-                        <div class="input-field col s12">
+                        <div class="input-field col s4">
                             <input placeholder="侧边栏名称" maxlength="10" id="content_name" v-model.trim="content.name"
                                 type="text" class="validate">
                             <label for="content_name">名称</label>
                         </div>
-                        <div class="input-field col s6">
+                        <div class="input-field col s4">
                             <input placeholder="mdi:link" id="content_icon" v-model.trim="content.icon" type="text"
                                 class="validate">
                             <label for="content_icon">图标</label>
                         </div>
 
-                        <div class="input-field col s6">
+                        <div class="input-field col s4">
                             <select id="select-mode" onchange="app.content.mode = this.value">
                                 <option value="1">默认</option>
                                 <option value="2">全屏</option>
@@ -145,6 +144,11 @@
                             <input placeholder="https://demo.home-assistant.io/" id="content_link"
                                 v-model.trim="content.link" type="text" class="validate">
                             <label for="content_link">链接</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input placeholder="http://192.168.31.210:1880/" id="wlan_link"
+                                v-model.trim="content.wlan_link" type="text" class="validate">
+                            <label for="wlan_link">局域网链接（非必填项, 同一网段下优先访问此链接）</label>
                         </div>
                         <div class="col s12">
                             可直接使用mdi官方图标：
@@ -242,7 +246,8 @@
                         name: '',
                         icon: '',
                         mode: 1,
-                        link: ''
+                        link: '',
+                        wlan_link: ''
                     },
                     // 列表
                     list: [],
@@ -316,13 +321,14 @@
                         name: '',
                         icon: '',
                         mode: 1,
-                        link: ''
+                        link: '',
+                        wlan_link: ''
                     }
                     $('#modal1').modal('open')
                 },
                 // 保存
                 saveClick() {
-                    let { name, icon, link, path, mode } = this.content
+                    let { name, icon, link, path, mode, wlan_link } = this.content
                     if (!name) {
                         this.toast('请输入名称')
                         return
@@ -342,7 +348,7 @@
                     this.loading = true
                     ha.post({
                         type: !path ? 'add' : 'edit',
-                        name, icon, link, path, mode
+                        name, icon, link, path, mode, wlan_link
                     }).then(res => {
                         this.toast(res.msg)
                     }).finally(() => {
@@ -351,9 +357,9 @@
                     $('#modal1').modal('close')
                 },
                 // 编辑
-                editClick({ name, icon, link, path, mode }) {
+                editClick({ name, icon, link, path, mode, wlan_link }) {
                     this.content = {
-                        name, icon, link, path, mode
+                        name, icon, link, path, mode, wlan_link
                     }
                     $('#select-mode').val(mode)
                     $('#select-mode').material_select();
@@ -405,16 +411,6 @@
                     } catch{ }
                     obj[item.link] = item.checked
                     localStorage['ha_sidebar_hide_menu'] = JSON.stringify(obj)
-                },
-                updateClick(){
-                    this.loading = true
-                    ha.post({
-                        type: 'update'
-                    }).then(res => {
-                        this.toast(res.msg)
-                    }).finally(()=>{
-                        this.loading = false
-                    })
                 }
             }
         })

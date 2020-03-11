@@ -10,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.5.3'
+VERSION = '1.5.5'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -37,11 +37,14 @@ def setup(hass, config):
             if item['mode'] == '5':
                 api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
             else:
+                wlan_link = item.get('wlan_link', '')
                 api.api_sidebar.add(
                     item['name'],
                     item['icon'],
                     item['path'],
-                    ROOT_PATH + '/link.html?mode=' + str(item['mode']) +'&link=' + quote(item['link'], 'utf-8'))
+                    ROOT_PATH + '/link.html?mode=' + str(item['mode']) 
+                    + '&link=' + quote(item['link'], 'utf-8')
+                    + '&wlan_link=' + quote(wlan_link, 'utf-8'))
     
     if hass.services.has_service(DOMAIN, 'reload') == False:
         async def reload(call):
@@ -88,17 +91,22 @@ class HassGateView(HomeAssistantView):
                 return self.json({'code':0, 'msg': '查询成功', 'data': res})
             elif _type == 'add':
                 _path = '_' + str(time.time())
+                wlan_link = query.get('wlan_link', '')
                 mode = str(query['mode'])                
                 if mode == '5':
                     api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
                 else:    
                     # 添加所有菜单
-                    api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH + '/link.html?mode=' + mode +'&link=' + quote(query['link'],'utf-8'))
+                    api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH 
+                    + '/link.html?mode=' + mode 
+                    + '&link=' + quote(query['link'],'utf-8')
+                    + '&wlan_link=' + quote(wlan_link, 'utf-8'))
                 # 添加数据
                 _list.append({
                     'name': query['name'],
                     'icon': query['icon'],
                     'link': query['link'],
+                    'wlan_link': wlan_link,
                     'mode': mode,
                     'path': _path,
                 })
@@ -116,6 +124,7 @@ class HassGateView(HomeAssistantView):
                 return self.json({'code':0, 'msg': '数据不存在'})
             elif _type == 'edit':
                 _path = query['path']
+                wlan_link = query.get('wlan_link', '')
                 mode = str(query['mode'])
                 if mode == '5':
                     api.api_sidebar.remove(_path)
@@ -126,9 +135,13 @@ class HassGateView(HomeAssistantView):
                         _list[i]['name'] = query['name']
                         _list[i]['icon'] = query['icon']
                         _list[i]['link'] = query['link']
+                        _list[i]['wlan_link'] = wlan_link
                         _list[i]['mode'] = mode
                         if mode != '5':
-                            api.api_sidebar.add(query['name'],query['icon'],_path,ROOT_PATH + '/link.html?mode=' + mode +'&link=' + quote(query['link'], 'utf-8'))
+                            api.api_sidebar.add(query['name'],query['icon'],_path,ROOT_PATH 
+                            + '/link.html?mode=' + mode 
+                            +'&link=' + quote(query['link'], 'utf-8')
+                            + '&wlan_link=' + quote(wlan_link, 'utf-8'))
 
                 api.write(StorageFile, _list)
                 return self.json({'code':0, 'msg': '保存成功'})
@@ -139,15 +152,6 @@ class HassGateView(HomeAssistantView):
                 config = await conf_util.async_hass_config_yaml(hass)
                 component.setup(hass, config)
                 return self.json({'code':0, 'msg': '保存成功'})
-            elif _type == 'update':
-                _path =  hass.config.path("custom_components").replace('\\','/')
-                _sh =  _path+'/ha_sidebar/update.sh'
-                with open(_sh, 'r', encoding='utf-8') as f:
-                    content = f.read().replace('$source_path', _path)
-                with open(_sh, 'w', encoding='utf-8') as f:
-                    f.write(content)
-                os.system(_sh)
-                return self.json({'code':0, 'msg': '升级成功'})
         except Exception as e:
             _LOGGER.error(e)
             return self.json({'code':1, 'msg': '出现异常'})
