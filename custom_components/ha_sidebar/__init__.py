@@ -10,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.5.5'
+VERSION = '1.5.6'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -45,16 +45,7 @@ def setup(hass, config):
                     ROOT_PATH + '/link.html?mode=' + str(item['mode']) 
                     + '&link=' + quote(item['link'], 'utf-8')
                     + '&wlan_link=' + quote(wlan_link, 'utf-8'))
-    
-    if hass.services.has_service(DOMAIN, 'reload') == False:
-        async def reload(call):
-            integration = await loader.async_get_integration(hass, DOMAIN)
-            component = integration.get_component()
-            importlib.reload(component)
-            config = await conf_util.async_hass_config_yaml(hass)
-            component.setup(hass, config)
 
-        hass.services.register(DOMAIN, 'reload', reload)
     # 注入定时脚本
     hass.components.frontend.add_extra_js_url(hass, ROOT_PATH + '/ha_sidebar.js')
     # 显示插件信息
@@ -144,13 +135,6 @@ class HassGateView(HomeAssistantView):
                             + '&wlan_link=' + quote(wlan_link, 'utf-8'))
 
                 api.write(StorageFile, _list)
-                return self.json({'code':0, 'msg': '保存成功'})
-            elif _type == 'reload':
-                integration = await loader.async_get_integration(hass, DOMAIN)
-                component = integration.get_component()
-                importlib.reload(component)
-                config = await conf_util.async_hass_config_yaml(hass)
-                component.setup(hass, config)
                 return self.json({'code':0, 'msg': '保存成功'})
         except Exception as e:
             _LOGGER.error(e)
