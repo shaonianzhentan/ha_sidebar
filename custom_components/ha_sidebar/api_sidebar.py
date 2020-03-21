@@ -15,7 +15,10 @@ class ApiSidebar():
             self.hass.components.frontend.async_remove_panel(_path)
 
     def add_tabs(self, ROOT_PATH, VERSION):
-        self.add(self.tabs_name, self.tabs_icon, "ha_sidebar-tabs", ROOT_PATH + '/tabs.html?ver=' + VERSION)
+        try:
+            self.add(self.tabs_name, self.tabs_icon, "ha_sidebar-tabs", ROOT_PATH + '/tabs.html?ver=' + VERSION)
+        except Exception as ex:
+            print(ex)
 
     def add(self, name, icon, _path, url):
         self.hass.components.frontend.async_register_built_in_panel(
