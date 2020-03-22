@@ -10,7 +10,7 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.5.7'
+VERSION = '1.6'
 URL = '/ha_sidebar-api-' + VERSION
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -34,9 +34,7 @@ def setup(hass, config):
     _list = api.read(StorageFile)
     if _list is not None:
         for item in _list:
-            if item['mode'] == '5':
-                api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
-            else:
+            if item['mode'] != '5':
                 wlan_link = item.get('wlan_link', '')
                 api.api_sidebar.add(
                     item['name'],
@@ -84,9 +82,7 @@ class HassGateView(HomeAssistantView):
                 _path = '_' + str(time.time())
                 wlan_link = query.get('wlan_link', '')
                 mode = str(query['mode'])                
-                if mode == '5':
-                    api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
-                else:    
+                if mode != '5':
                     # 添加所有菜单
                     api.api_sidebar.add(query['name'], query['icon'], _path, ROOT_PATH 
                     + '/link.html?mode=' + mode 
@@ -119,7 +115,6 @@ class HassGateView(HomeAssistantView):
                 mode = str(query['mode'])
                 if mode == '5':
                     api.api_sidebar.remove(_path)
-                    api.api_sidebar.add_tabs(ROOT_PATH, VERSION)
 
                 for i in range(len(_list)):
                     if _list[i]['path'] == _path:

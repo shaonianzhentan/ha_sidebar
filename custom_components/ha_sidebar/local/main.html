@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link href="https://cdn.bootcss.com/MaterialDesign-Webfont/4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/materialize/0.97.8/css/materialize.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+    <style>
+        #app .collection {
+            overflow: inherit !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app">
+        <nav>
+            <div class="nav-wrapper container">
+                <ul id="nav-mobile" class="right">
+
+                    <li><a href="#" @click="addClick"><i class="material-icons left">add</i>添加侧边栏</a></li>
+                    <li><a class="modal-trigger" href="#modal-info"><i
+                                class="material-icons left">info_outline</i>项目信息</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="modal-info" class="modal modal-fixed-footer">
+            <div class="modal-content">
+                <h4>项目信息</h4>
+                <p>&nbsp;</p>
+                <p>项目介绍：在HA里使用的侧边栏管理</p>
+                <p>项目版本：{{ver}}</p>
+                <p>项目地址：<a href="https://github.com/shaonianzhentan/ha_sidebar" target="_blank">
+                        https://github.com/shaonianzhentan/ha_sidebar</a></p>
+                <p>作者QQ：635147515</p>
+                <p>如果觉得此项目对你有用，请给项目点一个Star，谢谢</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">关闭</a>
+            </div>
+        </div>
+
+
+        <div class="container">
+
+            <ul class="collection">
+
+                <li class="collection-item avatar" v-for="(item,index) in list">
+                    <i class="circle red lighten-2">
+                        <i :class="`mdi ${item.icon.replace(':','-')}`"></i>
+                    </i>
+                    <span class="title">{{item.name}}</span>
+                    <p style="margin-top:5px;">
+                        <span class="chip">
+                            {{item.mode | format}}
+                        </span>
+                        <span class="chip">
+                            {{item.link}}
+                        </span>
+                    </p>
+                    <!--菜单-->
+                    <a href="#!" class='dropdown-button secondary-content ' :data-activates='`dropdown${index}`'>
+                        <i class="material-icons">more_vert</i>
+                    </a>
+                    <ul :id='`dropdown${index}`' class='dropdown-content '>
+                        <li @click="editClick(item)"><a href="#!">编辑</a></li>
+                        <li class="divider"></li>
+                        <li @click="deleteClick(item)"><a href="#!">删除</a></li>
+                        <li class="divider"></li>
+                        <li><a :href="item.link" target="_blank">打开</a></li>
+                    </ul>
+                </li>
+
+                <!-- 内置页面 -->
+                <li class="collection-item avatar" v-for="(item,index) in deflist">
+                    <i class="circle teal lighten-2">
+                        <i :class="`mdi ${item.icon}`"></i>
+                    </i>
+                    <span class="title">{{item.name}}</span>
+                    <p style="margin-top:5px;">
+                        <span class="chip">
+                            系统菜单
+                        </span>
+                        <span class="chip">
+                            {{item.link}}
+                        </span>
+                    </p>
+                    <!--菜单-->
+                    <a href="#!" class='secondary-content'>
+                        <div class="switch">
+                            <label>
+                                显示
+                                <input type="checkbox" @change="selectClick(item)" v-model="item.checked">
+                                <span class="lever"></span>
+                                隐藏
+                            </label>
+                        </div>
+                    </a>
+
+
+
+                </li>
+            </ul>
+
+
+
+        </div>
+        <!-- Modal Structure -->
+        <div id="modal1" class="modal">
+            <div class="modal-content">
+                <h4>侧边栏信息</h4>
+                <form style="margin-top:40px;">
+
+                    <div class="row">
+                        <div class="input-field col s4">
+                            <input placeholder="侧边栏名称" maxlength="10" id="content_name" v-model.trim="content.name"
+                                type="text" class="validate">
+                            <label for="content_name">名称</label>
+                        </div>
+                        <div class="input-field col s4">
+                            <input placeholder="mdi:link" id="content_icon" v-model.trim="content.icon" type="text"
+                                class="validate">
+                            <label for="content_icon">图标</label>
+                        </div>
+
+                        <div class="input-field col s4">
+                            <select id="select-mode" onchange="app.content.mode = this.value">
+                                <option value="1">默认</option>
+                                <option value="2">全屏</option>
+                                <option value="3">新选项卡</option>
+                                <option value="4">内置页面</option>
+                                <option value="5">二级菜单</option>
+                            </select>
+                            <label>打开方式</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input placeholder="https://demo.home-assistant.io/" id="content_link"
+                                v-model.trim="content.link" type="text" class="validate">
+                            <label for="content_link">链接</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input placeholder="http://192.168.31.210:1880/" id="wlan_link"
+                                v-model.trim="content.wlan_link" type="text" class="validate">
+                            <label for="wlan_link">局域网链接（非必填项, 同一网段下优先访问此链接）</label>
+                        </div>
+                        <div class="col s12">
+                            可直接使用mdi官方图标：
+                            <a class="teal-text" href="https://unpkg.com/@mdi/font@4.9.95/preview.html"
+                                target="_blank">https://unpkg.com/@mdi/font@4.9.95/preview.html</a>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class=" modal-action waves-effect waves-green btn-flat" @click="saveClick">保存</a>
+            </div>
+        </div>
+        <!-- loading -->
+        <div v-show="loading" style="position: fixed;top:0;left:0;width:100%;height:100vh;
+            background:rgba(0,0,0,.8);
+            z-index:10000;
+            padding-top:200px;
+            text-align:center;">
+            <div class="preloader-wrapper big active">
+                <div class="spinner-layer spinner-blue">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-red">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-yellow">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+
+                <div class="spinner-layer spinner-green">
+                    <div class="circle-clipper left">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                        <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <p style="color:white;">
+                加载中...
+            </p>
+        </div>
+    </div>
+    <script src="./ha.js?v=1.1"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data() {
+                let obj = {}
+                try {
+                    obj = JSON.parse(localStorage['ha_sidebar_hide_menu'])
+                } catch{ }
+
+                return {
+                    loading: false,
+                    // 版本
+                    ver: ha.ver,
+                    // 编辑内容
+                    content: {
+                        name: '',
+                        icon: '',
+                        mode: 1,
+                        link: '',
+                        wlan_link: ''
+                    },
+                    // 列表
+                    list: [],
+                    deflist: [
+                        {
+                            icon: 'mdi-link',
+                            name: '概览',
+                            link: '/lovelace',
+                            checked: !!obj['/lovelace']
+                        },
+                        {
+                            icon: 'mdi-link',
+                            name: '地图',
+                            link: '/map',
+                            checked: !!obj['/map']
+                        },
+                        {
+                            icon: 'mdi-link',
+                            name: '日志',
+                            link: '/logbook',
+                            checked: !!obj['/logbook']
+                        },
+                        {
+                            icon: 'mdi-link',
+                            name: '历史',
+                            link: '/history',
+                            checked: !!obj['/history']
+                        },
+                        {
+                            icon: 'mdi-link',
+                            name: '开发者工具',
+                            link: '/developer-tools',
+                            checked: !!obj['/developer-tools']
+                        },
+                        {
+                            icon: 'mdi-link',
+                            name: '配置',
+                            link: '/config',
+                            checked: !!obj['/config']
+                        }
+                    ]
+                }
+            },
+            filters: {
+                format(value) {
+                    if (value == 1) return '默认显示'
+                    if (value == 2) return '全屏显示'
+                    if (value == 3) return '新选项卡'
+                    if (value == 4) return '内置页面'
+                    if (value == 5) return '二级菜单'
+                }
+            },
+            created() {
+                ha.fullscreen()
+                this.getList()
+            },
+            methods: {
+                getList() {
+                    ha.post({
+                        type: 'get'
+                    }).then(res => {
+                        this.list = res.data
+                        setTimeout(() => {
+                            $('.dropdown-button').dropdown();
+                        }, 500)
+                    })
+                },
+                // 新增
+                addClick() {
+                    this.content = {
+                        name: '',
+                        icon: '',
+                        mode: 1,
+                        link: '',
+                        wlan_link: ''
+                    }
+                    $('#modal1').modal('open')
+                },
+                // 保存
+                saveClick() {
+                    let { name, icon, link, path, mode, wlan_link } = this.content
+                    if (!name) {
+                        this.toast('请输入名称')
+                        return
+                    }
+                    if (!icon) {
+                        this.toast('请输入图标')
+                        return
+                    }
+                    if (!link) {
+                        this.toast('请输入链接')
+                        return
+                    }
+                    // 格式修正
+                    if (icon.indexOf('mdi-') === 0) {
+                        icon = icon.replace('mdi-', 'mdi:')
+                    }
+                    this.loading = true
+                    ha.post({
+                        type: !path ? 'add' : 'edit',
+                        name, icon, link, path, mode, wlan_link
+                    }).then(res => {
+                        this.toast(res.msg)
+                    }).finally(() => {
+                        this.loading = false
+                    })
+                    $('#modal1').modal('close')
+                },
+                // 编辑
+                editClick({ name, icon, link, path, mode, wlan_link }) {
+                    this.content = {
+                        name, icon, link, path, mode, wlan_link
+                    }
+                    $('#select-mode').val(mode)
+                    $('#select-mode').material_select();
+                    $('#modal1').modal('open')
+                },
+                // 删除
+                deleteClick({ path, name }) {
+                    $.confirm({
+                        title: '删除提示',
+                        content: `你确定要删除【${name}】吗？`,
+                        type: 'red',
+                        buttons: {
+                            ok: {
+                                text: "确定删除",
+                                btnClass: 'btn-primary',
+                                keys: ['enter'],
+                                action: () => {
+                                    ha.post({
+                                        type: 'delete',
+                                        path
+                                    }).then(res => {
+                                        this.toast(res.msg)
+                                        this.getList()
+                                    })
+                                }
+                            },
+                            cancel: {
+                                text: "取消",
+                            }
+                        }
+                    });
+
+                },
+                toast(msg) {
+                    Materialize.toast(msg, 3000)
+                },
+                selectClick(item) {
+                    let obj = {}
+                    try {
+                        obj = JSON.parse(localStorage['ha_sidebar_hide_menu'])
+                    } catch{ }
+                    obj[item.link] = item.checked
+                    localStorage['ha_sidebar_hide_menu'] = JSON.stringify(obj)
+                }
+            }
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('select').material_select();
+            $('.modal').modal();
+        });       
+    </script>
+    <script>var _hmt = _hmt || []; window._hmt = _hmt; (function () { var hm = document.createElement('script'); hm.src = 'https://hm.baidu.com/hm.js?52d57d8b7588a022f89c451d06e311f0'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(hm, s) })();</script>
+</body>
+
+</html>
