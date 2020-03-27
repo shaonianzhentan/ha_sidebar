@@ -12,7 +12,8 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = 'ha_sidebar'
 VERSION = '1.6.1'
 URL = '/ha_sidebar-api-' + VERSION
-ROOT_PATH = '/ha_sidebar-local/' + VERSION
+LOCAL_VERSION = '1.6'
+ROOT_PATH = '/ha_sidebar-local/' + LOCAL_VERSION
 StorageFile = 'ha_sidebar.json'
 
 def setup(hass, config):
