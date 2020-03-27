@@ -13,6 +13,7 @@ class ApiSidebar():
             self.hass.components.frontend.async_remove_panel(_path)
 
     def add(self, name, icon, _path, url):
+        self.remove(_path)
         self.hass.components.frontend.async_register_built_in_panel(
                         "iframe",
                         name,
