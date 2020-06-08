@@ -15,8 +15,6 @@ ha_sidebar:
 ha_sidebar:
   sidebar_title: 侧边栏管理
   sidebar_icon: mdi:xbox-controller-menu
-  tabs_name: 二级菜单
-  tabs_icon: mdi:format-list-numbered
 
 ```
 

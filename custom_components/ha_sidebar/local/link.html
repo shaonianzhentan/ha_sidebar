@@ -25,6 +25,7 @@
                 ha.fire('location-changed', { replace: true }, top)
                 return
             }
+            ha.sandbox()
             // 全屏模式
             if (mode == 2) {
                 ha.fullscreen()

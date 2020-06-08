@@ -78,6 +78,16 @@ class HA {
             body: JSON.stringify(params)
         }).then(res => res.json())
     }
+
+    sandbox() {
+        try {
+            top.document.querySelector("home-assistant")
+                .shadowRoot.querySelector("home-assistant-main")
+                .shadowRoot.querySelector("ha-panel-iframe").shadowRoot.querySelector("iframe").removeAttribute('sandbox')
+        } catch (ex) {
+
+        }
+    }
 }
 
 window.ha = new HA()
