@@ -99,7 +99,7 @@
                     <span slot="title">展开/折叠</span>
                 </el-menu-item>
                 <el-menu-item index="home" @click="linkClick({link: `main.html?ver=${ha.ver}`})">
-                    <i class="el-icon-s-home"></i> 
+                    <i class="el-icon-s-home"></i>
                     <span slot="title">
                         侧边栏管理
                     </span>
@@ -120,6 +120,8 @@
     <script>
         ha.fullscreen()
         ha.sandbox()
+        window.frames[0].confirm = function (msg) { return top.confirm(msg) }
+        window.frames[0].alert = function (msg) { top.alert(msg) }
 
         const app = new Vue({
             el: '#app',

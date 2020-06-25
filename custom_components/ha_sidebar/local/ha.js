@@ -81,9 +81,12 @@ class HA {
 
     sandbox() {
         try {
-            top.document.querySelector("home-assistant")
+            let iframe = top.document.querySelector("home-assistant")
                 .shadowRoot.querySelector("home-assistant-main")
-                .shadowRoot.querySelector("ha-panel-iframe").shadowRoot.querySelector("iframe").removeAttribute('sandbox')
+                .shadowRoot.querySelector("ha-panel-iframe").shadowRoot.querySelector("iframe")
+            iframe.removeAttribute('sandbox')
+            iframe.contentWindow.confirm = function (msg) { return top.confirm(msg) }
+            iframe.contentWindow.alert = function (msg) { top.alert(msg) }
         } catch (ex) {
 
         }
