@@ -67,6 +67,12 @@
             }
         }
     </style>
+    <script>        
+        function iframeLoad() {
+            window.frames[0].confirm = function (msg) { return top.confirm(msg) }
+            window.frames[0].alert = function (msg) { top.alert(msg) }
+        }
+    </script>
 </head>
 
 <body>
@@ -120,11 +126,6 @@
     <script>
         ha.fullscreen()
         ha.sandbox()
-        function iframeLoad() {
-            window.frames[0].confirm = function (msg) { return top.confirm(msg) }
-            window.frames[0].alert = function (msg) { top.alert(msg) }
-        }
-
         const app = new Vue({
             el: '#app',
             data() {
