@@ -112,7 +112,7 @@
                 </el-menu-item>
             </el-menu>
         </el-scrollbar>
-        <iframe name="main" :src="`main.html?ver=${ha.ver}`"></iframe>
+        <iframe name="main" onload="iframeLoad()" :src="`main.html?ver=${ha.ver}`"></iframe>
     </div>
     <script src="ha.js"></script>
     <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
@@ -120,8 +120,10 @@
     <script>
         ha.fullscreen()
         ha.sandbox()
-        window.frames[0].confirm = function (msg) { return top.confirm(msg) }
-        window.frames[0].alert = function (msg) { top.alert(msg) }
+        function iframeLoad() {
+            window.frames[0].confirm = function (msg) { return top.confirm(msg) }
+            window.frames[0].alert = function (msg) { top.alert(msg) }
+        }
 
         const app = new Vue({
             el: '#app',
