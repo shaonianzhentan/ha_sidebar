@@ -10,9 +10,9 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.6.2'
+VERSION = '1.6.3'
 URL = '/ha_sidebar-api-' + VERSION
-LOCAL_VERSION = '1.6.2'
+LOCAL_VERSION = '1.6.3'
 ROOT_PATH = '/ha_sidebar-local/' + LOCAL_VERSION
 StorageFile = 'ha_sidebar.json'
 

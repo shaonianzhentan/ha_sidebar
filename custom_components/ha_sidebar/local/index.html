@@ -23,6 +23,33 @@
             width: 200px;
         }
 
+        .el-menu-vertical-demo .el-menu-item:first-child {
+            height: 64px !important;
+        }
+
+        .el-submenu__title i,
+        .el-menu-item i {
+            color: white;
+        }
+
+        .el-submenu__title:hover {
+            background-color: transparent !important;
+        }
+
+        .el-menu-item.is-active {
+            color: white !important;
+        }
+
+        .el-menu-item:hover i,
+        .el-menu-item:hover {
+            color: #000 !important;
+        }
+
+        .el-menu--horizontal .el-menu .el-menu-item,
+        .el-menu--horizontal .el-menu .el-menu-item i {
+            color: #000 !important;
+        }
+
         #app {
             display: flex;
         }
@@ -37,10 +64,8 @@
         }
 
         .el-scrollbar {
-            background-color: white;
             height: 100%;
             overflow-x: hidden;
-            border-right: 1px solid #eee;
         }
 
         .el-scrollbar__wrap {
@@ -67,7 +92,7 @@
             }
         }
     </style>
-    <script>        
+    <script>
         function iframeLoad() {
             window.frames[0].confirm = function (msg) { return top.confirm(msg) }
             window.frames[0].alert = function (msg) { top.alert(msg) }
@@ -78,7 +103,7 @@
 <body>
     <div id="app">
         <!-- 移动端 -->
-        <el-menu class="el-menu-demo" mode="horizontal">
+        <el-menu class="el-menu-demo  teal" text-color="#fff" mode="horizontal">
             <el-menu-item index="1" @click="toggleMenuClick">
                 <i class="el-icon-menu"></i> HA
             </el-menu-item>
@@ -98,8 +123,8 @@
 
 
         <!-- PC端 -->
-        <el-scrollbar>
-            <el-menu default-active='-1' class="el-menu-vertical-demo" :collapse="isCollapse">
+        <el-scrollbar class="teal">
+            <el-menu default-active='-1' class="el-menu-vertical-demo teal" text-color="#fff" :collapse="isCollapse">
                 <el-menu-item @click="isCollapse = !isCollapse" index="-1">
                     <i :class="`el-icon-s-${isCollapse ? 'unfold' : 'fold'}`"></i>
                     <span slot="title">展开/折叠</span>
