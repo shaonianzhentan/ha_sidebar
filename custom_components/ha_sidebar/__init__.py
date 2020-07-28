@@ -19,7 +19,7 @@ StorageFile = 'ha_sidebar.json'
 def setup(hass, config):
     cfg  = config[DOMAIN]
     sidebar_title = cfg.get('sidebar_title', '侧边栏管理')
-    sidebar_icon = cfg.get('sidebar_icon', 'mdi:xbox-controller-menu')
+    sidebar_icon = cfg.get('sidebar_icon', 'mdi:view-list-outline')
     api = ApiConfig(hass.config.path('./.storage'))
     api.api_sidebar = ApiSidebar(hass, cfg)
     hass.data[DOMAIN] = api
