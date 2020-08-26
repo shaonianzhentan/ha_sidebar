@@ -14,7 +14,7 @@
             let wlan_link = ha.query('wlan_link')
             let mode = parseInt(ha.query('mode'))
             // 打开内置页面
-            if (mode == 4) {
+            if (mode == 3) {
                 top.history.replaceState(null, null, link)
                 ha.fire('location-changed', { replace: true }, top)
                 return
