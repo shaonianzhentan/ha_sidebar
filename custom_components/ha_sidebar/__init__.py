@@ -10,17 +10,16 @@ from .api_sidebar import ApiSidebar
 _LOGGER = logging.getLogger(__name__)
 
 DOMAIN = 'ha_sidebar'
-VERSION = '1.6.3'
-URL = '/ha_sidebar-api-' + VERSION
-LOCAL_VERSION = '1.6.3'
-ROOT_PATH = '/ha_sidebar-local/' + LOCAL_VERSION
+VERSION = '2.0'
+URL = '/ha_sidebar-api'
+ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
 
 def setup(hass, config):
     cfg  = config[DOMAIN]
     sidebar_title = cfg.get('sidebar_title', '侧边栏管理')
     sidebar_icon = cfg.get('sidebar_icon', 'mdi:view-list-outline')
-    api = ApiConfig(hass.config.path('./.storage'))
+    api = ApiConfig(hass.config.path('./.shaonianzhentan'))
     api.api_sidebar = ApiSidebar(hass, cfg)
     hass.data[DOMAIN] = api
 
@@ -35,7 +34,7 @@ def setup(hass, config):
     _list = api.read(StorageFile)
     if _list is not None:
         for item in _list:
-            if item['mode'] != '5':
+            if item['show'] == True:
                 wlan_link = item.get('wlan_link', '')
                 api.api_sidebar.add(
                     item['name'],
@@ -45,8 +44,6 @@ def setup(hass, config):
                     + '&link=' + quote(item['link'], 'utf-8')
                     + '&wlan_link=' + quote(wlan_link, 'utf-8'))
 
-    # 注入定时脚本
-    hass.components.frontend.add_extra_js_url(hass, ROOT_PATH + '/ha_sidebar.js')
     # 显示插件信息
     _LOGGER.info('''
 -------------------------------------------------------------------
@@ -76,9 +73,6 @@ class HassGateView(HomeAssistantView):
             _type = query['type']
             if _type == 'get':
                 return self.json({'code':0, 'msg': '查询成功', 'data': _list})
-            elif _type == 'get_tabs':
-                res = list(filter(lambda x: x['mode'] == '5', _list))
-                return self.json({'code':0, 'msg': '查询成功', 'data': res})
             elif _type == 'add':
                 _path = '_' + str(time.time())
                 wlan_link = query.get('wlan_link', '')
@@ -94,6 +88,7 @@ class HassGateView(HomeAssistantView):
                     'name': query['name'],
                     'icon': query['icon'],
                     'link': query['link'],
+                    'show': query['show'],
                     'wlan_link': wlan_link,
                     'mode': mode,
                     'path': _path,

@@ -1,4 +1,5 @@
 class HA {
+
     constructor() {
         let query = new URLSearchParams(location.search)
         this.query = key => {
@@ -10,6 +11,8 @@ class HA {
         }
 
         this.ver = this.query('ver')
+        let hs = top.document.querySelector('home-assistant')
+        this.hass = hs?.hass
     }
 
     fullscreen(mode = 0) {
@@ -31,17 +34,8 @@ class HA {
         }
     }
 
-    post(params, url = '') {
-        let api = top.location.pathname + '-api-' + this.ver
-        if (url != '') {
-            api = url
-        }
-        return this.http(api, params)
-    }
-
     // 触发事件
     fire(type, data, ele = null) {
-        console.log(type, data)
         const event = new top.Event(type, {
             bubbles: true,
             cancelable: false,
@@ -56,25 +50,15 @@ class HA {
         ele.dispatchEvent(event);
     }
 
-    // http请求
-    async http(url, params) {
-        let hass = top.document.querySelector('home-assistant').hass
-        let auth = hass.auth
-        let authorization = ''
-        if (auth._saveTokens) {
-            // 过期
-            if (auth.expired) {
-                await auth.refreshAccessToken()
-            }
-            authorization = `${auth.data.token_type} ${auth.accessToken}`
-        } else {
-            authorization = `Bearer ${auth.data.access_token}`
-        }
-        return fetch(url, {
-            method: 'post',
-            headers: {
-                authorization
-            },
+    // 提示
+    toast(message) {
+        this.fire("hass-notification", { message })
+    }
+
+    // 请求接口
+    fetchApi(params) {
+        return this.hass.fetchWithAuth('/ha_sidebar-api', {
+            method: 'POST',
             body: JSON.stringify(params)
         }).then(res => res.json())
     }
@@ -88,18 +72,9 @@ class HA {
             iframe.contentWindow.confirm = function (msg) { return top.confirm(msg) }
             iframe.contentWindow.alert = function (msg) { top.alert(msg) }
         } catch (ex) {
-
+            console.log(ex)
         }
     }
 }
 
-window.ha = new HA();
-
-(()=>{
-    // 主题跟着系统改变
-    let style = document.createElement('style')
-    style.textContent = `
-    .teal{ background-color: ${top.getComputedStyle(top.document.body).getPropertyValue('--primary-color')} !important}
-    `
-    document.head.appendChild(style)
-})();
+window.ha = new HA()

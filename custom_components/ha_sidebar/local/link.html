@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <script src="ha.js"></script>
+    <script src="./ha.js?v=1.0"></script>
     <script>
         // 获取数据
         (() => {
@@ -16,18 +16,12 @@
             // 打开内置页面
             if (mode == 4) {
                 top.history.replaceState(null, null, link)
-                // top.document.querySelector('home-assistant')._route = {
-                //     prefix: '',
-                //     path: link,
-                //     __queryParams: {}
-                // }
-                // top.document.querySelector('home-assistant')._panelUrl = link
                 ha.fire('location-changed', { replace: true }, top)
                 return
             }
             ha.sandbox()
             // 全屏模式
-            if (mode == 2) {
+            if (mode == 1) {
                 ha.fullscreen()
             } else {
                 ha.fullscreen(1)
@@ -52,16 +46,13 @@
             a.href = link
             a.textContent = link
             document.body.appendChild(a)
-            
-            if (mode == 3) {
+
+            if (mode == 2) {
                 window.open(link)
             } else {
                 location.href = link;
             }
-
         })()
-
-
     </script>
 </body>
 
