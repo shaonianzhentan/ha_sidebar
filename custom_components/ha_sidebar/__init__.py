@@ -27,7 +27,7 @@ def setup(hass, config):
     local = hass.config.path("custom_components/" + DOMAIN + "/local")
     if os.path.isdir(local):
         hass.http.register_static_path(ROOT_PATH, local, False)
-        api.api_sidebar.add(sidebar_title, sidebar_icon, DOMAIN, ROOT_PATH + "/index.html?ver=" + VERSION)
+        api.api_sidebar.add(sidebar_title, sidebar_icon, DOMAIN, ROOT_PATH + "/index.html?v=1&ver=" + VERSION)
 
     hass.http.register_view(HassGateView)
 
