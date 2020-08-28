@@ -12,7 +12,7 @@ class HA {
 
         this.ver = this.query('ver')
         let hs = top.document.querySelector('home-assistant')
-        if(hs) this.hass = hs.hass
+        if (hs) this.hass = hs.hass
     }
 
     fullscreen(mode = 0) {
@@ -29,8 +29,8 @@ class HA {
                 ha_card.style.top = '0'
                 ha_card.style.height = '100%'
             }
-        } catch{
-
+        } catch (ex) {
+            console.log(ex)
         }
     }
 
