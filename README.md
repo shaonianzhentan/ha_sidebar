@@ -14,11 +14,13 @@ ha_sidebar:
 # 完整配置
 ha_sidebar:
   sidebar_title: 侧边栏管理
-  sidebar_icon: mdi:xbox-controller-menu
-
+  sidebar_icon: mdi:view-list-outline
 ```
 
 # 更新日志
+
+### v2.2
+- 字体图标更新到5.5.55，兼容HA 0.115版本
 
 ### v2.1
 - 所有外部资源改为本地，不依赖外部网络
