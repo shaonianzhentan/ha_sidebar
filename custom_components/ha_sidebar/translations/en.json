@@ -1,0 +1,17 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "description": "项目: https://github.com/shaonianzhentan/ha_sidebar \n 图标：https://unpkg.com/@mdi/font@5.6.55/preview.html",
+                "data": {
+                    "name": "名称",
+                    "icon": "图标"
+                }
+            }
+        },
+        "error": {},
+        "abort": {
+            "single_instance_allowed": "仅允许单个配置."
+        }
+    }
+}

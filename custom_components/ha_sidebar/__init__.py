@@ -6,19 +6,26 @@ from urllib.parse import quote,unquote
 
 from .api_config import ApiConfig
 from .api_sidebar import ApiSidebar
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = 'ha_sidebar'
-VERSION = '2.2'
+VERSION = '2.0'
 URL = '/ha_sidebar-api'
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
 
 def setup(hass, config):
+    # 如果没有配置则不运行
+    if DOMAIN not in config:
+        return True
+    # 如果已经运行，则不进行操作
+    if DOMAIN in hass.data:
+        return True
+    # 读取配置
     cfg  = config[DOMAIN]
-    sidebar_title = cfg.get('sidebar_title', '侧边栏管理')
-    sidebar_icon = cfg.get('sidebar_icon', 'mdi:view-list-outline')
+    sidebar_title = cfg.get('name', '侧边栏管理')
+    sidebar_icon = cfg.get('icon', 'mdi:view-list-outline').replace('mdi-', 'mdi:')
     api = ApiConfig(hass.config.path('./.shaonianzhentan'))
     api.api_sidebar = ApiSidebar(hass, cfg)
     hass.data[DOMAIN] = api
@@ -55,6 +62,10 @@ def setup(hass, config):
 -------------------------------------------------------------------''')
     return True
 
+async def async_setup_entry(hass, entry):
+    # print("集成安装=============================")
+    setup(hass, { DOMAIN: entry.data })
+    return True
 
 class HassGateView(HomeAssistantView):
 
