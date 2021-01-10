@@ -20,4 +20,4 @@ class ApiSidebar():
                         icon,
                         _path,
                         {"url": url},
-                        require_admin=True)
+                        require_admin=False)
