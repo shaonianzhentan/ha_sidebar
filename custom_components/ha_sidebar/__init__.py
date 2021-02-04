@@ -10,7 +10,7 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-VERSION = '2.0.1'
+VERSION = '2.0.2'
 URL = '/ha_sidebar-api'
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
 StorageFile = 'ha_sidebar.json'
@@ -32,24 +32,22 @@ def setup(hass, config):
 
     # 注册静态目录
     local = hass.config.path("custom_components/" + DOMAIN + "/local")
-    if os.path.isdir(local):
-        hass.http.register_static_path(ROOT_PATH, local, False)
-        api.api_sidebar.add(sidebar_title, sidebar_icon, DOMAIN, ROOT_PATH + "/index.html?v=2&ver=" + VERSION)
+    hass.http.register_static_path(ROOT_PATH, local, False)
+    api.api_sidebar.add(sidebar_title, sidebar_icon, DOMAIN, ROOT_PATH + "/index.html?ver=" + VERSION)
 
     hass.http.register_view(HassGateView)
 
     _list = api.read(StorageFile)
     if _list is not None:
         for item in _list:
-            if item['show'] == True:
-                wlan_link = item.get('wlan_link', '')
-                api.api_sidebar.add(
-                    item['name'],
-                    item['icon'],
-                    item['path'],
-                    ROOT_PATH + '/link.html?mode=' + str(item['mode']) 
-                    + '&link=' + quote(item['link'], 'utf-8')
-                    + '&wlan_link=' + quote(wlan_link, 'utf-8'))
+            wlan_link = item.get('wlan_link', '')
+            api.api_sidebar.add(
+                item['name'],
+                item['icon'],
+                item['path'],
+                ROOT_PATH + '/link.html?mode=' + str(item['mode']) 
+                + '&link=' + quote(item['link'], 'utf-8')
+                + '&wlan_link=' + quote(wlan_link, 'utf-8'))
 
     # 显示插件信息
     _LOGGER.info('''
@@ -99,7 +97,6 @@ class HassGateView(HomeAssistantView):
                     'name': query['name'],
                     'icon': query['icon'],
                     'link': query['link'],
-                    'show': query['show'],
                     'wlan_link': wlan_link,
                     'mode': mode,
                     'path': _path,

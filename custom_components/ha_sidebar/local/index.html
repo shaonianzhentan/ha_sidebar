@@ -37,7 +37,8 @@
                     <div class="card-body">
                         <h2 class="card-title ">
                             <i :class="`mdi ${item.icon.replace(':','-')}`"></i>
-                            {{item.name}}</h2>
+                            {{item.name}}
+                        </h2>
                         <hr class="divider">
                         <p style="overflow:auto;">
                             {{item.link}}
@@ -47,13 +48,12 @@
                                 v-if="item.mode==2" :href="item.href" target="_blank">{{item.modeName}}</a>
                             <a class="btn btn-link btn-default border" title="打开链接" style="margin-top: 1rem;" v-else
                                 :href="item.href">{{item.modeName}}</a>
+                            <a class="btn btn-link btn-default border-all op-btn" @click="editClick(item)">
+                                <i class="mdi mdi-circle-edit-outline"></i>
+                            </a>
                             <a class="btn btn-link btn-default border-all op-btn" title="删除" @click="deleteClick(item)">
                                 <i class="mdi mdi-delete"></i>
                             </a>
-                            <!-- <a class="btn btn-link btn-default border-all op-btn">
-                                <i class="mdi mdi-circle-edit-outline"></i>
-                            </a> -->
-
                         </div>
                     </div>
                 </div>
@@ -71,6 +71,11 @@
                         <div style="text-align: right;">
                             <a class="btn btn-link btn-default border" style="margin-top: 1rem;" target="_blank"
                                 href="https://github.com/shaonianzhentan/ha_sidebar">查看项目</a>
+
+                            <a class="btn btn-link btn-default border" href="javascript:;" v-show="formData.path"
+                                @click="addClick">
+                                新增侧边栏
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -110,14 +115,9 @@
                         <input class="input border" type="text" placeholder="非必填项, 同一网段下优先访问此链接"
                             v-model.trim="formData.wlan_link">
                     </div>
-                    <div class="row" style="align-items: center;">
-                        <div class="col-md-6"><label class="radio-label"><input class="radio" type="checkbox"
-                                    name="radio" v-model="formData.show">
-                                侧边栏显示</label></div>
-                        <div class="col-md-6 col-md-offset-6"><button class="btn btn-default btn-full border"
-                                @click="saveClick">保存</button>
-                        </div>
-                    </div>
+                    <br />
+                    <button class="btn btn-default btn-full border" @click="saveClick">{{formData.path ? '编辑' :
+                        '新增'}}保存</button>
                 </fieldset>
             </div>
         </div>
@@ -131,12 +131,12 @@
                 return {
                     ver: ha.ver,
                     formData: {
+                        path: '',
                         name: '',
                         icon: '',
                         mode: 0,
                         link: '',
-                        wlan_link: '',
-                        show: true
+                        wlan_link: ''
                     },
                     list: []
                 }
@@ -162,18 +162,37 @@
                         })
                     })
                 },
+                addClick() {
+                    this.formData.path = ''
+                    this.formData.name = ''
+                    this.formData.icon = ''
+                    this.formData.mode = 0
+                    this.formData.link = ''
+                    this.formData.wlan_link = ''
+                },
+                editClick(item) {
+                    this.formData.path = item.path
+                    this.formData.name = item.name
+                    this.formData.icon = item.icon
+                    this.formData.mode = item.mode
+                    this.formData.link = item.link
+                    this.formData.wlan_link = item.wlan_link
+                },
                 saveClick() {
-                    let { name, icon, link, wlan_link, show, mode } = this.formData
+                    let { path, name, icon, link, wlan_link, mode } = this.formData
                     if (!name || !link) {
                         return ha.toast("名称、链接为必填项")
                     }
                     if (!icon) icon = 'mdi:link'
 
                     ha.fetchApi({
-                        type: 'add',
+                        type: path ? 'edit' : 'add',
+                        path,
                         name,
                         icon: icon.replace('mdi-', 'mdi:'),
-                        link, wlan_link, show, mode
+                        link, 
+                        wlan_link, 
+                        mode
                     }).then(res => {
                         if (res.code == 0) {
                             location.reload()
