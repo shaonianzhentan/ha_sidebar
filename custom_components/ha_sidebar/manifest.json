@@ -1,6 +1,7 @@
 {
   "domain": "ha_sidebar",
-  "name": "\u4FA7\u8FB9\u680F\u7BA1\u7406",
+  "name": "\u4FA7\u8FB9\u680F\u7BA1\u7406",  
+  "version": "2.0",
   "config_flow": true,
   "documentation": "https://github.com/shaonianzhentan/ha_sidebar",
   "requirements": [],
