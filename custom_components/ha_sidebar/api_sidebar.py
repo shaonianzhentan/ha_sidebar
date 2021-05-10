@@ -1,7 +1,7 @@
 
 class ApiSidebar():
 
-    def __init__(self, hass, cfg):
+    def __init__(self, hass):
         self.hass = hass
 
     @property

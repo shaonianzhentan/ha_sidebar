@@ -9,7 +9,7 @@ from .const import DOMAIN  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
-DATA_SCHEMA = vol.Schema({vol.Required("name", default = "侧边栏管理"): str, vol.Required("icon", default = "mdi:view-list-outline"): str})
+DATA_SCHEMA = vol.Schema({})
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
@@ -23,7 +23,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         # 如果输入内容不为空，则进行验证
         if user_input is not None:
-            return self.async_create_entry(title="侧边栏管理", data=user_input)
+            return self.async_create_entry(title="", data=user_input)
         
         # 显示表单
         return self.async_show_form(

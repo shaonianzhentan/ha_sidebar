@@ -17,23 +17,15 @@ StorageFile = 'ha_sidebar.json'
 
 def setup(hass, config):
     # 如果没有配置则不运行
-    if DOMAIN not in config:
+    if DOMAIN not in config or DOMAIN in hass.data:
         return True
-    # 如果已经运行，则不进行操作
-    if DOMAIN in hass.data:
-        return True
-    # 读取配置
-    cfg  = config[DOMAIN]
-    sidebar_title = cfg.get('name', '侧边栏管理')
-    sidebar_icon = cfg.get('icon', 'mdi:view-list-outline').replace('mdi-', 'mdi:')
     api = ApiConfig(hass.config.path('./.shaonianzhentan'))
-    api.api_sidebar = ApiSidebar(hass, cfg)
+    api.api_sidebar = ApiSidebar(hass)
     hass.data[DOMAIN] = api
 
     # 注册静态目录
-    local = hass.config.path("custom_components/" + DOMAIN + "/local")
-    hass.http.register_static_path(ROOT_PATH, local, False)
-    api.api_sidebar.add(sidebar_title, sidebar_icon, DOMAIN, ROOT_PATH + "/index.html?ver=" + VERSION)
+    hass.http.register_static_path(ROOT_PATH, hass.config.path("custom_components/" + DOMAIN + "/local"), False)
+    api.api_sidebar.add("侧边栏管理", "mdi:view-list-outline", DOMAIN, ROOT_PATH + "/index.html?ver=" + VERSION)
 
     hass.http.register_view(HassGateView)
 
@@ -61,7 +53,6 @@ def setup(hass, config):
     return True
 
 async def async_setup_entry(hass, entry):
-    # print("集成安装=============================")
     setup(hass, { DOMAIN: entry.data })
     return True
 
