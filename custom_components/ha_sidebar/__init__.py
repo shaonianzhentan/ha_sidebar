@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 VERSION = '2.0.3'
 URL = '/ha_sidebar-api'
 ROOT_PATH = '/ha_sidebar-local/' + VERSION
-StorageFile = 'ha_sidebar.json'
+StorageFile = 'ha_sidebar.yaml'
 
 def setup(hass, config):
     # 如果没有配置则不运行
