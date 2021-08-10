@@ -177,6 +177,7 @@
                     this.formData.mode = item.mode
                     this.formData.link = item.link
                     this.formData.wlan_link = item.wlan_link
+                    document.body.scrollIntoView()
                 },
                 saveClick() {
                     let { path, name, icon, link, wlan_link, mode } = this.formData
