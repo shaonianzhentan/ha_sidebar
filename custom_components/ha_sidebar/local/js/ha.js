@@ -28,6 +28,9 @@ class HA {
                 // 新版
                 iframe = subpage.querySelector("iframe");
                 toolbar = subpage.shadowRoot.querySelector('.toolbar')
+                if (mode === 0) {
+                    subpage.shadowRoot.querySelector('.content').style.height = '100vh'
+                }
             } else {
                 // 旧版
                 iframe = haPanelIframe.querySelector("iframe");
