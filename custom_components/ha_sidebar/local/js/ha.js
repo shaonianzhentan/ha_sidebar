@@ -20,14 +20,25 @@ class HA {
             let haPanelIframe = top.document.body
                 .querySelector("home-assistant")
                 .shadowRoot.querySelector("home-assistant-main")
-                .shadowRoot.querySelector("app-drawer-layout partial-panel-resolver ha-panel-iframe").shadowRoot
-            let ha_card = haPanelIframe.querySelector("iframe");
-            ha_card.style.position = 'absolute'
+                .shadowRoot.querySelector("app-drawer-layout partial-panel-resolver ha-panel-iframe").shadowRoot;
 
+            let iframe = null, toolbar = null;
+            let subpage = haPanelIframe.querySelector("hass-subpage")
+            if (subpage) {
+                // 新版
+                iframe = subpage.querySelector("iframe");
+                toolbar = subpage.shadowRoot.querySelector('.toolbar')
+            } else {
+                // 旧版
+                iframe = haPanelIframe.querySelector("iframe");
+                toolbar = haPanelIframe.querySelector('app-toolbar')
+            }
+
+            iframe.style.position = 'absolute'
             if (mode === 0) {
-                haPanelIframe.querySelector('app-toolbar').style.display = 'none'
-                ha_card.style.top = '0'
-                ha_card.style.height = '100%'
+                toolbar.style.display = 'none'
+                iframe.style.top = '0'
+                iframe.style.height = '100%'
             }
         } catch (ex) {
             console.log(ex)
