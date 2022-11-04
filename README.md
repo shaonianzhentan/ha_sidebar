@@ -1,3 +1,8 @@
+本插件停止更新，推荐使用新插件：https://github.com/shaonianzhentan/panel_iframe
+
+#### 关注我的微信订阅号，了解更多HomeAssistant相关知识
+<img src="https://github.com/shaonianzhentan/ha-docs/raw/master/docs/img/wechat-channel.png" height="160" alt="HomeAssistant家庭助理" title="HomeAssistant家庭助理"> 
+
 # ha_sidebar
 在HA里使用的侧边栏管理
 
